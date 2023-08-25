@@ -1,121 +1,132 @@
 <script setup lang="ts">
-import { PaperAirplaneIcon } from "@heroicons/vue/20/solid";
 import { vAutoAnimate } from "@formkit/auto-animate";
 
-interface Message {
-  role: string;
-  content: string;
-}
+const signs = [
+  {
+    sign: "Aries",
+    startDate: "3/21",
+    endDate: "4/19",
+    imageUrl: "aries.svg",
+  },
+  {
+    sign: "Taurus",
+    startDate: "4/20",
+    endDate: "5/20",
+    imageUrl: "taurus.svg",
+  },
+  {
+    sign: "Gemini",
+    startDate: "5/21",
+    endDate: "6/20",
+    imageUrl: "gemini.svg",
+  },
+  {
+    sign: "Cancer",
+    startDate: "6/21",
+    endDate: "7/22",
+    imageUrl: "cancer.svg",
+  },
+  {
+    sign: "Leo",
+    startDate: "7/23",
+    endDate: "8/22",
+    imageUrl: "leo.svg",
+  },
+  {
+    sign: "Virgo",
+    startDate: "8/23",
+    endDate: "9/22",
+    imageUrl: "virgo.svg",
+  },
+  {
+    sign: "Libra",
+    startDate: "9/23",
+    endDate: "10/22",
+    imageUrl: "libra.svg",
+  },
+  {
+    sign: "Scorpio",
+    startDate: "10/23",
+    endDate: "11/21",
+    imageUrl: "scorpio.svg",
+  },
+  {
+    sign: "Sagittarius",
+    startDate: "11/22",
+    endDate: "12/21",
+    imageUrl: "sagittarius.svg",
+  },
+  {
+    sign: "Capricorn",
+    startDate: "12/22",
+    endDate: "1/19",
+    imageUrl: "capricorn.svg",
+  },
+  {
+    sign: "Aquarius",
+    startDate: "1/20",
+    endDate: "2/18",
+    imageUrl: "aquarius.svg",
+  },
+  {
+    sign: "Pisces",
+    startDate: "2/19",
+    endDate: "3/20",
+    imageUrl: "pisces.svg",
+  },
+];
+
 const route = useRoute();
 const sign = route.params.sign;
 const { data } = await useFetch(`/api/getHoroscopes?sign=${sign}`);
-const { data: questions } = await useFetch("/api/getRandomQuestions");
-const messages: Ref<Message[]> = ref([]);
-const chatbox = ref();
-const userQuestion = ref("");
-const awaitingResponse = ref(false);
-const defaultMessage = {
-  role: "assistant",
-  content: "How can I assist you today?",
-};
-async function askQuestion(question?: string) {
-  if (!question && !userQuestion.value) return;
-  if (awaitingResponse.value) return;
-  const newMessage = {
-    role: "user",
-    content: question || userQuestion.value,
-  };
-
-  //Push the users question into the stack of messages
-  messages.value.push(newMessage);
-  //Clear the question
-  userQuestion.value = "";
-  awaitingResponse.value = true;
-  const { data } = await useFetch("/api/askQuestion", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: {
-      sign: route.params.sign,
-      messages: messages.value,
-    },
-  });
-  const returnedMessages = data.value as Message;
-  //Push the resposne from the AI into the stack of messages
-  messages.value.push(returnedMessages);
-  awaitingResponse.value = false;
-  chatbox.value.scrollTop = chatbox.value.scrollHeight;
-}
 </script>
 
 <template>
   <main class="max-w-7xl">
-    <div class="flex flex-col justify-between sm:h-[90vh]">
-      <div class="mx-auto">
-        <div class="mx-auto max-w-2xl text-center">
-          <h1
-            class="text-xl font-bold tracking-tight text-white sm:text-4xl italic"
-          >
-            {{ data[0].sign.split(" ")[0] }}
-            <br />
-            ({{ data[0].sign.split(" (")[1] }}
-          </h1>
+    <div class="flex flex-col justify-between">
+      <div class="grid grid-cols-1 md:grid-cols-2 p-16 rounded-lg bg-stars">
+        <div class="items-center justify-center hidden md:flex">
+          <img :src="'images/big_' + sign + '.svg'" alt="" class="w-1/2" />
         </div>
-        <p class="text-md mt-4 text-white">
-          {{ data[0].horoscope }}
-        </p>
-      </div>
-      <div class="flex flex-col justify-between grow overflow-y-scroll">
-        <div v-auto-animate ref="chatbox" class="grid grid-cols-1 gap-4 mt-4">
-          <Message :message="defaultMessage" />
-          <Message v-for="message in messages" :message="message" />
-          <PlaceholderMessage v-if="awaitingResponse" />
+        <div>
+          <div class="mx-auto max-w-2xl">
+            <h1
+              class="text-xl font-bold tracking-tight text-white sm:text-4xl italic"
+            >
+              {{ data[0].sign.split(" ")[0] }}
+            </h1>
+            <p class="text-md tracking-tight text-white">
+              ({{ data[0].sign.split(" (")[1] }}
+            </p>
+          </div>
+          <div>
+            <h2 class="text-2xl text-white font-bold">Today's Horoscope</h2>
+            <p class="text-md mt-4 text-white">
+              {{ data[0].horoscope }}
+            </p>
+          </div>
         </div>
       </div>
-      <div class="relative mt-2 rounded-md shadow-sm">
-        <form @submit.prevent="askQuestion()">
-          <div class="flex gap-2 py-2 flex-wrap">
-            <button
-              type="button"
-              :disabled="awaitingResponse"
-              class="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 cursor-pointer hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
-              v-for="question in questions"
-              @click="askQuestion(`${question.question}`)"
-            >
-              {{ question.question }}
-            </button>
+      <!-- sign select -->
+      <div
+        class="flex flex-col lg:flex-row items-center justify-center gap-4 py-8"
+      >
+        <span class="text-white text-lg font-bold">Change Sign:</span>
+        <div class="flex gap-4 flex-wrap">
+          <div v-for="sign in signs" class="flex flex-col gap-2 items-center">
+            <NuxtLink
+              class="p-4 shadow-sm bg-purple-500 w-16 h-16 rounded-full sign"
+              :to="'/' + sign.sign"
+              :style="{
+                backgroundImage: 'url(/images/' + sign.sign + '-icon.svg)',
+              }"
+            ></NuxtLink>
+            <div class="text-white">{{ sign.sign }}</div>
           </div>
-          <div class="relative">
-            <input
-              type="text"
-              name="account-number"
-              id="account-number"
-              placeholder="Ask me anything"
-              :disabled="awaitingResponse"
-              v-model="userQuestion"
-              class="block w-full rounded-md border-0 px-6 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-            <button
-              type="submit"
-              class="absolute inset-y-0 right-0 flex items-center pr-3"
-            >
-              <PaperAirplaneIcon
-                class="h-6 w-6 md:h-8 md:w-8 text-gray-400"
-                aria-hidden="true"
-              />
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
+      <!-- Chat -->
+      <AstrosView :sign="sign" />
     </div>
   </main>
 </template>
-
-<style scoped>
-html {
-  background-image: url("/images/aries.svg");
-  background-position: center;
-  background-size: cover;
-}
-</style>

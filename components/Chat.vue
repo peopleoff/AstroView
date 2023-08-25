@@ -1,76 +1,101 @@
+<script setup lang="ts">
+import { PaperAirplaneIcon } from "@heroicons/vue/20/solid";
+interface Message {
+  role: string;
+  content: string;
+}
+const props = defineProps({
+  sign: {
+    type: String,
+    required: true,
+  },
+  selectedQuestion: {
+    type: String,
+    default: "",
+  },
+});
+const messages: Ref<Message[]> = ref([]);
+const chatbox = ref();
+const userQuestion = ref("");
+const awaitingResponse = ref(false);
+const defaultMessage = {
+  role: "assistant",
+  content: "How can I assist you today?",
+};
+
+async function askQuestion(question?: string) {
+  console.log(question);
+  if (!question && !userQuestion.value) return;
+  if (awaitingResponse.value) return;
+  const newMessage = {
+    role: "user",
+    content: question || userQuestion.value,
+  };
+
+  //Push the users question into the stack of messages
+  messages.value.push(newMessage);
+  //Clear the question
+  userQuestion.value = "";
+  awaitingResponse.value = true;
+  const { data } = await useFetch("/api/askQuestion", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: {
+      sign: props.sign,
+      messages: messages.value,
+    },
+  });
+  const returnedMessages = data.value as Message;
+  //Get new questions to ask
+  //Push the resposne from the AI into the stack of messages
+  messages.value.push(returnedMessages);
+  awaitingResponse.value = false;
+  chatbox.value.scrollTop = chatbox.value.scrollHeight;
+}
+
+watch(
+  () => props.selectedQuestion,
+  (question) => {
+    if (question) {
+      askQuestion(question);
+    }
+  }
+);
+</script>
+
 <template>
-  <div>
-    <div class="grid grid-cols-1 gap-4 overflow-y-hidden">
-    <div v-for="person in people" :key="person.email" class="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400">
-      <div class="flex-shrink-0">
-        <img class="h-10 w-10 rounded-full" :src="person.imageUrl" alt="" />
-      </div>
-      <div class="min-w-0 flex-1">
-        <a href="#" class="focus:outline-none">
-          <span class="absolute inset-0" aria-hidden="true" />
-          <p class="text-sm font-medium text-gray-900">{{ person.name }}</p>
-          <p class="truncate text-sm text-gray-500">{{ person.role }}</p>
-        </a>
-      </div>
+  <div class="rounded-xl">
+    <div class="text-left text-white p-4 bg-slate-800 rounded-t-md"></div>
+    <div ref="chatbox" class="flex flex-col gap-2 bg-stars p-4">
+      <Message :message="defaultMessage" :sign="sign" />
+      <Message v-for="message in messages" :message="message" :sign="sign" />
+      <PlaceholderMessage v-if="awaitingResponse" />
     </div>
-  </div>
-    <div class="relative mt-2 rounded-md shadow-sm">
-      <input type="text" name="account-number" id="account-number" placeholder="Ask me anything" class="block w-full rounded-full border-0 px-6 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-      <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-        <PaperAirplaneIcon class="h-6 w-6 md:h-8 md:w-8 text-gray-400" aria-hidden="true" />
-      </div>
+    <div class="relative p-4 rounded-b-md shadow-sm bg-slate-800">
+      <form @submit.prevent="askQuestion()">
+        <div class="relative">
+          <input
+            type="text"
+            name="account-number"
+            id="account-number"
+            placeholder="Ask me anything"
+            :disabled="awaitingResponse"
+            v-model="userQuestion"
+            class="block w-full rounded-md border-0 px-6 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+          <button
+            type="submit"
+            class="absolute inset-y-0 right-0 flex items-center pr-3"
+          >
+            <PaperAirplaneIcon
+              class="h-6 w-6 md:h-8 md:w-8 text-gray-400"
+              aria-hidden="true"
+            />
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </template>
-
-
-
-
-<script setup>
-const people = [
-  {
-    name: 'Leslie Alexander',
-    email: 'leslie.alexander@example.com',
-    role: 'Co-Founder / CEO',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  },
-  {
-    name: 'Leslie Alexander',
-    email: 'leslie.alexander@example.com',
-    role: 'Co-Founder / CEO',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  },
-  {
-    name: 'Leslie Alexander',
-    email: 'leslie.alexander@example.com',
-    role: 'Co-Founder / CEO',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  },
-  {
-    name: 'Leslie Alexander',
-    email: 'leslie.alexander@example.com',
-    role: 'Co-Founder / CEO',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  },
-  {
-    name: 'Leslie Alexander',
-    email: 'leslie.alexander@example.com',
-    role: 'Co-Founder / CEO',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  },
-  {
-    name: 'Leslie Alexander',
-    email: 'leslie.alexander@example.com',
-    role: 'Co-Founder / CEO',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  },
-  // More people...
-]
-import { PaperAirplaneIcon } from '@heroicons/vue/20/solid'
-</script>

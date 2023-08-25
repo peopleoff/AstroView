@@ -16,11 +16,11 @@ const isExpanded = ref(false);
 <template>
   <NuxtLink :to="'/' + sign.sign">
     <article
-      class="relative isolate flex flex-col justify-center items-center overflow-hidden rounded-2xl h-72 p-8 shadow-xl cursor-pointer z-10"
+      class="relative isolate flex flex-col justify-center items-center overflow-hidden rounded-2xl h-72 p-8 shadow-xl cursor-pointer z-10 bg-stars"
       :class="{ 'full-screen': isExpanded }"
     >
       <img
-        :src="`/images/${sign.imageUrl}`"
+        :src="`/images/big_${sign.sign}.svg`"
         alt=""
         class="absolute inset-0 -z-10 h-full w-full object-cover pointer-events-none"
       />
