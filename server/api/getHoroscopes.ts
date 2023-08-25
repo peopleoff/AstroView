@@ -10,7 +10,7 @@ export default eventHandler(async (event) => {
     day: "2-digit",
     year: "numeric",
   });
-  const { data } = await client
+  const { data, error } = await client
     .from("Horoscopes")
     .select("*")
     .ilike("sign", `%${query.sign}%`)
@@ -18,5 +18,6 @@ export default eventHandler(async (event) => {
     .order("created_at", { ascending: false })
     .order("id", { ascending: true });
   console.log(data);
+  console.log(error);
   return data;
 });
