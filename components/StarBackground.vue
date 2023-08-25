@@ -7,13 +7,8 @@
 </template>
 
 <style scoped>
-html {
-  height: 100%;
-  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
-  overflow: hidden;
-}
-
 #stars {
+  height: 100%;
   width: 1px;
   height: 1px;
   background: transparent;

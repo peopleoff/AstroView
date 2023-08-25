@@ -1,14 +1,32 @@
+<script setup lang="ts">
+const props = defineProps({
+  isExpanded: {
+    type: Boolean,
+    default: false,
+  },
+  sign: {
+    type: Object,
+    default: {},
+  },
+});
+</script>
+
 <template>
   <div
-    class="slide-container bg-slate-800 text-white flex flex-col p-8 justify-between text-center gap-8"
+    class="slide-container bg-slate-800 text-white flex flex-col p-8 justify-between gap-8"
+    :class="{ hidden: !props.isExpanded }"
   >
-    <div>
-      <h1 class="text-4xl font-bold">Aries</h1>
-      <h2 class="text-4xl font-bold">4/12 - 3/40</h2>
+    <div class="text-center">
+      <h1 class="text-4xl font-bold">{{ sign?.sign }}</h1>
+      <h2 class="text-2xl font-bold">
+        {{ sign?.startDate }} - {{ sign?.endDate }}
+      </h2>
     </div>
     <div class="flex-grow">
       <h3 class="text-2xl font-bold">Today</h3>
-      <p class="text-xl">You will be very happy today</p>
+      <span class="mt-4">
+        {{ props.sign?.horoscope?.horoscope }}
+      </span>
     </div>
     <div>
       <label
