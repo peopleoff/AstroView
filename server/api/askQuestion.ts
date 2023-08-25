@@ -19,8 +19,6 @@ export default defineEventHandler(async (event) => {
   ];
 
   messages.unshift(...prompt);
-  const user = await getHeaders(event);
-  console.log(user["x-forwarded-for"]);
 
   const configuration = new Configuration({
     apiKey: process.env.OPENAI_APIKEY,
@@ -30,6 +28,6 @@ export default defineEventHandler(async (event) => {
     model: "gpt-3.5-turbo",
     messages: messages,
   });
-  console.log(chatCompletion.data.choices[0]);
+
   return chatCompletion.data.choices[0].message;
 });

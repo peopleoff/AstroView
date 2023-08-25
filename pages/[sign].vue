@@ -6,26 +6,26 @@ interface Message {
 }
 const route = useRoute();
 const sign = route.params.sign;
-console.log(route);
 const { data } = await useFetch(`/api/getHoroscopes?sign=${sign}`);
+const { data: questions } = await useFetch("/api/getRandomQuestions");
 const messages: Ref<Message[]> = ref([]);
 const chatbox = ref();
-const question = ref("");
+const userQuestion = ref("");
 const defaultMessage = {
   role: "assistant",
   content: "How can I assist you today?",
 };
-async function askQuestion() {
+async function askQuestion(question?: string) {
   const newMessage = {
     role: "user",
-    content: question.value,
+    content: question || userQuestion.value,
   };
 
   //Push the users question into the stack of messages
   messages.value.push(newMessage);
   //Clear the question
-  question.value = "";
-  const { data} = await useFetch("/api/askQuestion", {
+  userQuestion.value = "";
+  const { data } = await useFetch("/api/askQuestion", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -69,13 +69,21 @@ async function askQuestion() {
         </div>
       </div>
       <div class="relative mt-2 rounded-md shadow-sm">
-        <form @submit.prevent="askQuestion">
+        <form @submit.prevent="askQuestion()">
+          <div class="flex gap-2 py-2 flex-wrap">
+            <span
+              class="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+              v-for="question in questions"
+              @click="askQuestion(`${question.question}`)"
+              >{{ question.question }}</span
+            >
+          </div>
           <input
             type="text"
             name="account-number"
             id="account-number"
             placeholder="Ask me anything"
-            v-model="question"
+            v-model="userQuestion"
             class="block w-full rounded-md border-0 px-6 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
           <button

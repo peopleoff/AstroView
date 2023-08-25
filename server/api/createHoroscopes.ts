@@ -19,7 +19,6 @@ export default defineEventHandler(async (event) => {
       },
     ],
   });
-  console.log(chatCompletion.data);
   const result = chatCompletion.data.choices[0].message?.content;
   const client = await serverSupabaseClient(event);
 
