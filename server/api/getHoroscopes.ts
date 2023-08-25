@@ -17,6 +17,6 @@ export default eventHandler(async (event) => {
     .filter("created_at", "eq", todayDate)
     .order("created_at", { ascending: false })
     .order("id", { ascending: true });
-
+  console.log(data);
   return data;
 });
