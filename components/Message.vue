@@ -13,12 +13,10 @@ const props = defineProps({
     v-if="props.message.role != 'system' && props.message.role != 'placeholder'"
   >
     <div class="min-w-0 flex-1">
-      <a href="#" class="focus:outline-none">
-        <p class="text-sm font-medium text-white">
-          {{ props.message.role === "assistant" ? "AstroAnswers" : "Me" }}
-        </p>
-        <p class="text-sm text-white">{{ props.message.content }}</p>
-      </a>
+      <p class="text-sm font-medium text-white">
+        {{ props.message.role === "assistant" ? "AstroAnswers" : "Me" }}
+      </p>
+      <p class="text-sm text-white whitespace-pre break-words" style="text-wrap: balance">{{ props.message.content }}</p>
     </div>
   </div>
   <PlaceholderMessage v-if="props.message.role === 'placeholder'" />

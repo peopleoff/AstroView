@@ -1,10 +1,10 @@
 <script setup lang="ts">
 useHead({
   bodyAttrs: {
-    class: "flex h-full flex-col",
+    class: "flex flex-col",
   },
   htmlAttrs: {
-    class: "h-full",
+    class: "",
   },
 });
 </script>

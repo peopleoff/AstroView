@@ -38,12 +38,6 @@ const isExpanded = ref(false);
           {{ sign.startDate }} - {{ sign.endDate }}
         </span>
       </div>
-      <div class="flex gap-1 absolute bottom-12">
-        <span
-          class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
-          >What Areas of Transformation Await Me?</span
-        >
-      </div>
     </article>
   </NuxtLink>
 </template>
