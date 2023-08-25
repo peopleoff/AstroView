@@ -2,7 +2,6 @@ import { serverSupabaseClient } from "#supabase/server";
 
 export default eventHandler(async (event) => {
   const query = getQuery(event);
-  console.log(query);
   const client = await serverSupabaseClient(event);
   // Get today's date in the format "MM/DD"
   const todayDate = new Date().toLocaleDateString("en-US", {
@@ -17,7 +16,5 @@ export default eventHandler(async (event) => {
     .filter("created_at", "eq", todayDate)
     .order("created_at", { ascending: false })
     .order("id", { ascending: true });
-  console.log(data);
-  console.log(error);
   return data;
 });

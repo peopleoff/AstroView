@@ -14,11 +14,13 @@ export default defineEventHandler(async (event) => {
     },
     {
       role: "system",
-      content: `I am a cancer and this was my horoscope today ${horoscope}`,
+      content: `I am a ${sign} and this was my horoscope today ${horoscope}`,
     },
   ];
 
   messages.unshift(...prompt);
+  const user = await getHeaders(event);
+  console.log(user["x-forwarded-for"]);
 
   const configuration = new Configuration({
     apiKey: process.env.OPENAI_APIKEY,
@@ -28,5 +30,6 @@ export default defineEventHandler(async (event) => {
     model: "gpt-3.5-turbo",
     messages: messages,
   });
+  console.log(chatCompletion.data.choices[0]);
   return chatCompletion.data.choices[0].message;
 });
