@@ -2,6 +2,7 @@ import { serverSupabaseClient } from "#supabase/server";
 
 export default eventHandler(async (event) => {
   const query = getQuery(event);
+  console.log(query);
   const client = await serverSupabaseClient(event);
   // Get today's date in the format "MM/DD"
   const todayDate = new Date().toLocaleDateString("en-US", {

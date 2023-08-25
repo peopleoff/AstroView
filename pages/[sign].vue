@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { PaperAirplaneIcon } from "@heroicons/vue/20/solid";
-const route = useRoute();
 interface Message {
   role: string;
   content: string;
 }
-
-const { data } = await useFetch(`/api/getHoroscopes?sign=${route.params.sign}`);
-
-console.log(data);
+const route = useRoute();
+const sign = route.params.sign;
+console.log(route);
+const { data } = await useFetch(`/api/getHoroscopes?sign=${sign}`);
 const messages: Ref<Message[]> = ref([]);
 const chatbox = ref();
 const question = ref("");
@@ -22,15 +21,11 @@ async function askQuestion() {
     content: question.value,
   };
 
-  const placeholderMessage = {
-    role: "placeholder",
-    content: "Let me think about that...",
-  };
   //Push the users question into the stack of messages
   messages.value.push(newMessage);
   //Clear the question
   question.value = "";
-  const { data, pending, error, refresh } = await useFetch("/api/askQuestion", {
+  const { data} = await useFetch("/api/askQuestion", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -48,7 +43,7 @@ async function askQuestion() {
 </script>
 
 <template>
-  <main class="max-w-7xl px-0 lg:px-8">
+  <main class="max-w-7xl">
     <div class="flex flex-col justify-between h-[90vh]">
       <div class="mx-auto">
         <div class="mx-auto max-w-2xl text-center">
