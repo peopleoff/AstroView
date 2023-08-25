@@ -7,6 +7,8 @@ interface Message {
 }
 
 const { data } = await useFetch(`/api/getHoroscopes?sign=${route.params.sign}`);
+
+console.log(data);
 const messages: Ref<Message[]> = ref([]);
 const chatbox = ref();
 const question = ref("");
