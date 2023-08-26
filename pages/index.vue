@@ -93,6 +93,5 @@ const signs = [
         <SignCard v-for="sign in signs" :key="sign.sign" :sign="sign" />
       </div>
     </div>
-    <Newsletter />
   </div>
 </template>

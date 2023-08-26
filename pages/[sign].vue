@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { vAutoAnimate } from "@formkit/auto-animate";
-
 const signs = [
   {
     sign: "Aries",
@@ -84,9 +82,11 @@ const { data } = await useFetch(`/api/getHoroscopes?sign=${sign}`);
 <template>
   <main class="max-w-7xl">
     <div class="flex flex-col justify-between">
-      <div class="grid grid-cols-1 md:grid-cols-2 p-16 rounded-lg bg-stars">
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 p-8 lg:p-16 rounded-lg bg-stars"
+      >
         <div class="items-center justify-center hidden md:flex">
-          <img :src="'images/big_' + sign + '.svg'" alt="" class="w-1/2" />
+          <img :src="'images/big_' + sign + '.svg'" alt="" />
         </div>
         <div>
           <div class="mx-auto max-w-2xl">
@@ -112,21 +112,23 @@ const { data } = await useFetch(`/api/getHoroscopes?sign=${sign}`);
         class="flex flex-col lg:flex-row items-center justify-center gap-4 py-8"
       >
         <span class="text-white text-lg font-bold">Change Sign:</span>
-        <div class="flex gap-4 flex-wrap">
-          <div v-for="sign in signs" class="flex flex-col gap-2 items-center">
-            <NuxtLink
-              class="p-4 shadow-sm bg-purple-500 w-16 h-16 rounded-full sign"
+        <div class="flex gap-4 flex-wrap justify-evenly xs:justify-normal">
+          <NuxtLink
+            v-for="sign in signs"
+            :to="sign.sign"
+            class="flex flex-col gap-2 items-center"
+          >
+            <img
+              class="shadow-sm bg-purple-500 w-16 h-16 rounded-full sign"
               :to="'/' + sign.sign"
-              :style="{
-                backgroundImage: 'url(/images/' + sign.sign + '-icon.svg)',
-              }"
-            ></NuxtLink>
+              :src="'images/' + sign.sign.toLowerCase() + '-icon.svg'"
+            />
             <div class="text-white">{{ sign.sign }}</div>
-          </div>
+          </NuxtLink>
         </div>
       </div>
       <!-- Chat -->
-      <AstrosView :sign="sign" />
+      <AstrosView :sign="sign.toString()" />
     </div>
   </main>
 </template>

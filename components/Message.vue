@@ -9,31 +9,36 @@ const props = defineProps({
     required: true,
   },
 });
+
+function renderHtml(content: string){
+  return `<p>${content}</p>`
+}
 </script>
 
 <template>
   <div
-    class="flex gap-4 rounded-xl p-4"
+    class="flex flex-col md:flex-row gap-4 rounded-xl p-4"
     :class="[
       props.message.role === 'assistant' ? 'bg-violet-100' : 'bg-stone-50',
       props.message.role === 'assistant' ? '' : 'justify-between',
     ]"
   >
+    <Logo class="h-12 w-12" v-if="props.message.role === 'assistant'" />
     <img
+      v-else
       :src="`/images/${sign}-icon.svg`"
-      class="w-12 h-12 rounded-full"
-      :class="[
-        props.message.role === 'assistant' ? 'order-first' : 'order-last',
-      ]"
-      alt=""
+      class="p-[2px] w-12 h-12 shadow-sm bg-purple-500 rounded-full md:order-last"
     />
-    <div class="flex flex-col text-left">
-      <p class="text-sm font-medium text-black">
-        {{ props.message.role === "assistant" ? "Astro:" : "" }}
+    <div class="flex flex-col text-left shrink-[1000] justify-center">
+      <p
+        class="text-sm font-medium text-black"
+        v-if="props.message.role === 'assistant'"
+      >
+        Astro
       </p>
       <p
-        class="text-sm text-black whitespace-pre break-words"
-        style="text-wrap: balance"
+        class="text-sm text-black break-words"
+        style="white-space: pre-line"
       >
         {{ props.message.content }}
       </p>

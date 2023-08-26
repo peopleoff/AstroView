@@ -4,7 +4,7 @@ useHead({
     class: "flex flex-col",
   },
   htmlAttrs: {
-    class: "",
+    class: "bg-gradient-to-b from-slate-800 to-slate-900",
   },
 });
 </script>
@@ -12,16 +12,14 @@ useHead({
 <template>
   <div class="bg-transparent">
     <Header />
-    <div class="mx-auto max-w-7xl px-6 lg:px-8 h-full py-20">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8 h-full pt-24">
       <NuxtPage />
     </div>
+    <Newsletter />
   </div>
 </template>
 
 <style>
-html {
-  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
-}
 .bg-stars {
   background-image: url("/images/stars.svg");
   background-position: center;

@@ -5,13 +5,6 @@ defineProps({
     required: true,
   },
 });
-
-const selectedQuestion = ref("");
-
-function onSelectedQuestion(question: string) {
-  selectedQuestion.value = question;
-  console.log(question);
-}
 </script>
 
 <template>
@@ -25,15 +18,19 @@ function onSelectedQuestion(question: string) {
     <div class="grid grid-cols-3 gap-4">
       <!-- Chat -->
       <div class="col-span-3 md:col-span-2">
-        <Chat :sign="sign" :selectedQuestion="selectedQuestion" />
+        <Chat :sign="sign" />
       </div>
       <!-- questions -->
-      <div class="bg-slate-800 py-8 px-4 rounded-xl hidden md:block col-span-1">
+      <div
+        class="bg-slate-800 py-8 px-4 rounded-xl col-span-3 md:col-span-1"
+      >
         <div class="text-left text-white">
-          <h4 class="text-xl font-bold">Select a Question</h4>
-          <p class="text-md">A list of questions for extra guideance</p>
+          <h4 class="text-xl font-bold">Today's Vibes</h4>
         </div>
-        <Questions @selectedQuestion="onSelectedQuestion" />
+        <div class="text-left text-white mt-4">
+          <h3 class="text-md font-bold">Matches</h3>
+        </div>
+        <Stats />
       </div>
     </div>
   </div>

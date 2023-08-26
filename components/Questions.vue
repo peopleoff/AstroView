@@ -3,10 +3,10 @@ import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/vue/24/outline";
 const { data: questions, refresh: refreshQuestions } = await useFetch(
   "/api/getRandomQuestions"
 );
-const emits = defineEmits(["selectedQuestion"]);
+const emits = defineEmits(["onSelectedQuestion"]);
 
-function selectedQuestion(question: string) {
-  emits("selectedQuestion", question);
+function onSelectedQuestion(question: string) {
+  emits("onSelectedQuestion", question);
   refreshQuestions();
 }
 </script>
@@ -18,7 +18,7 @@ function selectedQuestion(question: string) {
         v-for="question in questions"
         :key="question"
         class="flex gap-x-6 my-6 py-5 bg-white rounded-xl p-4 cursor-pointer hover:bg-gray-50"
-        @click="selectedQuestion(question.question)"
+        @click="onSelectedQuestion(question.question)"
       >
         <ChatBubbleOvalLeftEllipsisIcon
           class="h-12 w-12 flex-none rounded-full"
