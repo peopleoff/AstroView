@@ -12,23 +12,31 @@ const phase = parsedJson.phase[day];
 function formatMoonName(phase) {
   const phaseLighting = phase.lighting;
   const phaseName = phase.phaseName.toLowerCase();
+  const formattedPhase = {
+    phaseName: phaseName,
+    phaseClass: "",
+  };
   if (phaseName.includes("waxing") || phaseName.includes("waning")) {
     if (phaseLighting > 50) {
-      return `${phaseName}-gibbous`;
+      formattedPhase.phaseClass = `${phaseName}-gibbous`;
     } else {
-      return `${phaseName}-crescent`;
+      formattedPhase.phaseClass = `${phaseName}-crescent`;
     }
   } else {
-    return phaseName.replace(" ", "-");
+    formattedPhase.phaseClass = phaseName.replace(" ", "-");
   }
+
+  return formattedPhase;
 }
 </script>
 
 <template>
-  <div class="text-white">
-    <div class="moon" :class="formatMoonName(phase)">
-      <div class="disc" :class="formatMoonName(phase)"></div>
+  <div class="text-white flex flex-col items-center justify-center">
+    <p>Today's Moon</p>
+    <div class="moon" :class="formatMoonName(phase).phaseClass">
+      <div class="disc" :class="formatMoonName(phase).phaseClass"></div>
     </div>
+    <p>{{ formatMoonName(phase).phaseName }}</p>
   </div>
 </template>
 

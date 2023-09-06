@@ -12,7 +12,7 @@ useHead({
 <template>
   <div class="bg-transparent">
     <Header />
-    <div class="mx-auto max-w-7xl px-6 lg:px-8 h-full pt-24">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8 h-full pt-36">
       <NuxtPage />
     </div>
     <Newsletter />
