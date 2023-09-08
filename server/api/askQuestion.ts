@@ -1,10 +1,12 @@
 import { Configuration, OpenAIApi } from "openai";
-import { serverSupabaseClient } from "#supabase/server";
-
+import Horoscope from "@/types/Horoscope";
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_APIKEY,
+});
+const openai = new OpenAIApi(configuration);
 export default defineEventHandler(async (event) => {
-  const { messages, sign } = await readBody(event);
-  const data = await event.$fetch(`/api/getHoroscopes?sign=${sign}`);
-  const horoscope = data[0].horoscope;
+  const { messages, sign, date } = await readBody(event);
+  const data: Horoscope = await event.$fetch(`/api/getHoroscopes?sign=${sign}&date=${date}`);
 
   const prompt = [
     {
@@ -14,20 +16,23 @@ export default defineEventHandler(async (event) => {
     },
     {
       role: "system",
-      content: `I am a ${sign} and this was my horoscope today ${horoscope}`,
+      content: `I am a ${sign} and this was my horoscope today ${data.horoscope}`,
     },
   ];
-
+  //Add the prompt to the beginning of the messages array
   messages.unshift(...prompt);
+  try {
+    const chatCompletion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: messages,
+    });
 
-  const configuration = new Configuration({
-    apiKey: process.env.OPENAI_APIKEY,
-  });
-  const openai = new OpenAIApi(configuration);
-  const chatCompletion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: messages,
-  });
+    return chatCompletion.data.choices[0].message;
+  } catch (error) {
+    throw createError({
+      statusCode: 500,
+      message: 'Something went wrong',
+    });
+  }
 
-  return chatCompletion.data.choices[0].message;
 });

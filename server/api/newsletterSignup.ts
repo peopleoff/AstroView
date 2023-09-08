@@ -2,7 +2,13 @@ import client from "@sendgrid/client";
 client.setApiKey(process.env.SENDGRID_API_KEY);
 
 export default eventHandler(async (event) => {
-  const { email, sign } = await readBody(event);
+  const { email } = await readBody(event);
+  if (!email) {
+    throw createError({
+      statusCode: 400,
+      message: 'No email provided',
+    })
+  }
   const data = {
     contacts: [
       {
@@ -17,15 +23,13 @@ export default eventHandler(async (event) => {
     method: "PUT",
     body: data,
   };
-
-  client
-    .request(request)
-    .then(([response, body]) => {
-      console.log(response.statusCode);
-      console.log(response.body);
+  try {
+    const result = await client.request(request)
+    return result;
+  } catch (error) {
+    throw createError({
+      statusCode: 500,
+      message: 'Something went wrong',
     })
-    .catch((error) => {
-      console.error(error);
-    });
-  return data;
+  }
 });

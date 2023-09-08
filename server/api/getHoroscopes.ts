@@ -1,20 +1,26 @@
 import { serverSupabaseClient } from "#supabase/server";
 
 export default eventHandler(async (event) => {
-  const query = getQuery(event);
+  const { sign, date } = getQuery(event);
   const client = await serverSupabaseClient(event);
-  // Get today's date in the format "MM/DD"
-  const todayDate = new Date().toLocaleDateString("en-US", {
-    month: "2-digit",
-    day: "2-digit",
-    year: "numeric",
-  });
   const { data, error } = await client
     .from("Horoscopes")
     .select("*")
-    .ilike("sign", `%${query.sign}%`)
-    .filter("created_at", "eq", todayDate)
+    .ilike("sign", `%${sign}%`)
+    .filter("created_at", "eq", date)
     .order("created_at", { ascending: false })
-    .order("id", { ascending: true });
-  return data;
+    .order("id", { ascending: true })
+  if (error) {
+    throw createError({
+      statusCode: 500,
+      message: error.message,
+    })
+  }
+  if (data.length === 0) {
+    throw createError({
+      statusCode: 500,
+      message: 'No data found',
+    })
+  }
+  return data[0];
 });

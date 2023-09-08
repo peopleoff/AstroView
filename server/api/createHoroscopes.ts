@@ -1,6 +1,9 @@
 import { Configuration, OpenAIApi } from "openai";
 import { serverSupabaseClient } from "#supabase/server";
+
 export default defineEventHandler(async (event) => {
+  const { date } = getQuery(event);
+  const createdAt = date || new Date().toLocaleDateString();
   const configuration = new Configuration({
     apiKey: process.env.OPENAI_APIKEY,
   });
@@ -20,14 +23,24 @@ export default defineEventHandler(async (event) => {
     ],
   });
   const result = chatCompletion.data.choices[0].message?.content;
+  if (!result) {
+    return "No result"
+  }
   const client = await serverSupabaseClient(event);
 
-  const aiHoroscopes = result?.split("\n\n").map((sign) => {
+  const aiHoroscopes: Array<Horoscope> = result.split("\n\n").map((sign) => {
     const [title, content] = sign.split(":\n");
-    return { sign: title, horoscope: content };
+    return { sign: title, horoscope: content, created_at: createdAt };
   });
-  const { data } = await client.from("Horoscopes").insert(aiHoroscopes);
-  return result;
+  const { data, error } = await client.from("Horoscopes").insert(aiHoroscopes);
+  if (error) {
+    throw createError({
+      statusCode: 500,
+      message: error.message,
+    })
+  }
+  console.log(error);
+  return aiHoroscopes;
 });
 
 // import { serverSupabaseClient } from '#supabase/server'

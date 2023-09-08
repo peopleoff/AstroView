@@ -2,17 +2,15 @@
 import { PaperAirplaneIcon } from "@heroicons/vue/20/solid";
 import { QuestionMarkCircleIcon } from "@heroicons/vue/20/solid";
 import { vAutoAnimate } from "@formkit/auto-animate";
-interface Message {
-  role: string;
-  content: string;
-}
+import gptMessage from '@/types/gptMessage'
+const route = useRoute();
 const props = defineProps({
   sign: {
     type: String,
     required: true,
   },
 });
-const messages: Ref<Message[]> = ref([]);
+const messages: Ref<gptMessage[]> = ref([]);
 const chatbox = ref();
 const userQuestion = ref("");
 const awaitingResponse = ref(false);
@@ -21,6 +19,8 @@ const defaultMessage = {
   role: "assistant",
   content: "How can I assist you today?",
 };
+const passedDate = route.query.date;
+const date = passedDate || new Date().toLocaleDateString("en-US");
 
 async function askQuestion(question?: string) {
   showQuestions.value = false;
@@ -36,7 +36,12 @@ async function askQuestion(question?: string) {
   //Clear the question
   userQuestion.value = "";
   awaitingResponse.value = true;
-  const { data } = await useFetch("/api/askQuestion", {
+  console.log({
+      sign: props.sign,
+      messages: messages.value,
+      date: date
+    })
+  const { data, error } = await useFetch("/api/askQuestion", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -44,24 +49,23 @@ async function askQuestion(question?: string) {
     body: {
       sign: props.sign,
       messages: messages.value,
+      date: date
     },
   });
-  const returnedMessages = data.value as Message;
+  console.log(error);
+  if(error.value){
+    throw createError({
+      message: error.value.message,
+      statusCode: error.value.statusCode
+    })
+  }
+  const returnedMessages = data.value as gptMessage;
   //Get new questions to ask
   //Push the resposne from the AI into the stack of messages
   messages.value.push(returnedMessages);
   awaitingResponse.value = false;
   chatbox.value.scrollTop = chatbox.value.scrollHeight;
 }
-
-// watch(
-//   () => props.selectedQuestion,
-//   (question) => {
-//     if (question) {
-//       askQuestion(question);
-//     }
-//   }
-// );
 </script>
 
 <template>
