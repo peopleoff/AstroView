@@ -22,7 +22,7 @@ const isExpanded = ref(false);
       <img
         :src="`/images/big_${sign.sign}.svg`"
         alt=""
-        class="absolute inset-0 -z-10 h-full w-full object-none sm:object-cover pointer-events-none"
+        class="absolute inset-0 -z-10 h-full w-full object-cover pointer-events-none"
       />
       <div
         class="absolute inset-0 -z-10 bg-gradient-to-t from-gray-900 via-gray-900/40 pointer-events-none"
