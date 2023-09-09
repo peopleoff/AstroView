@@ -35,9 +35,6 @@ if (error.value) {
             <h1 class="text-xl font-bold tracking-tight text-white sm:text-4xl italic">
               {{ data.sign.split(" ")[0] }}
             </h1>
-            <p class="text-md tracking-tight text-white">
-              {{ date }}
-            </p>
           </div>
           <div>
             <h2 class="text-2xl text-white font-bold">Today's Horoscope</h2>

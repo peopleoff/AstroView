@@ -17,7 +17,7 @@ function renderHtml(content: string){
 
 <template>
   <div
-    class="flex flex-col md:flex-row gap-4 rounded-xl p-4"
+    class="flex flex-row md:flex-row gap-4 rounded-xl p-4"
     :class="[
       props.message.role === 'assistant' ? 'bg-violet-100' : 'bg-stone-50',
       props.message.role === 'assistant' ? '' : 'justify-between',
@@ -27,7 +27,7 @@ function renderHtml(content: string){
     <img
       v-else
       :src="`/images/${sign}-icon.svg`"
-      class="p-[2px] w-12 h-12 shadow-sm bg-purple-500 rounded-full md:order-last"
+      class="p-[2px] w-12 h-12 shadow-sm bg-purple-500 rounded-full order-last"
     />
     <div class="flex flex-col text-left shrink-[1000] justify-center">
       <p

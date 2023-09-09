@@ -52,7 +52,6 @@ async function askQuestion(question?: string) {
       date: date
     },
   });
-  console.log(error);
   if(error.value){
     throw createError({
       message: error.value.message,
