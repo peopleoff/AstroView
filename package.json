@@ -6,7 +6,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "test": "vitest"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
@@ -19,8 +20,10 @@
     "@formkit/auto-animate": "^0.7.0",
     "@headlessui/vue": "^1.7.15",
     "@heroicons/vue": "^2.0.18",
+    "@nuxt/test-utils": "^3.7.1",
     "@sendgrid/client": "^7.7.0",
     "js-confetti": "^0.11.0",
-    "openai": "^3.3.0"
+    "openai": "^3.3.0",
+    "vitest": "^0.33.0"
   }
 }

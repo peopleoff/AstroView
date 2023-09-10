@@ -5,6 +5,10 @@ useHead({
   },
   htmlAttrs: {
     class: "bg-gradient-to-b from-slate-800 to-slate-900",
+    lang: "en"
+  },
+  titleTemplate: (titleChunk) => {
+    return titleChunk ? `${titleChunk} - AstroView` : "AstroView";
   },
 });
 </script>
