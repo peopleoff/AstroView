@@ -9,6 +9,13 @@ const { data, error } = await useFetch<Horoscope>(
   `/api/getHoroscopes?sign=${sign}&date=${date}`
 );
 
+if (error.value) {
+  throw createError({
+    statusCode: 404,
+    message: error.value.toString(),
+  });
+}
+
 if (!data) {
   throw createError({
     statusCode: 404,
@@ -16,12 +23,6 @@ if (!data) {
   });
 }
 
-if (error.value) {
-  throw createError({
-    statusCode: 404,
-    message: "Sign not found",
-  });
-}
 const formattedSign = splitSign(data.value?.sign || "");
 useHead({
   title: formattedSign.sign,
