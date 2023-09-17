@@ -7,6 +7,9 @@ useHead({
     class: "bg-gradient-to-b from-slate-800 to-slate-900",
     lang: "en"
   },
+  meta: [
+    { name: 'theme-color', content: '#a855f7' }
+  ],
   titleTemplate: (titleChunk) => {
     return titleChunk ? `${titleChunk} - AstroView` : "AstroView";
   },

@@ -16,7 +16,7 @@ if (error.value) {
   });
 }
 
-if (!data) {
+if (!data.value) {
   throw createError({
     statusCode: 404,
     message: "Sign not found",
@@ -26,6 +26,12 @@ if (!data) {
 const formattedSign = splitSign(data.value?.sign || "");
 useHead({
   title: formattedSign.sign,
+  link: [
+    {
+      rel: 'canonical',
+      href: `https://astroview.io/${sign}`,
+    }
+  ],
   meta: [
     {
       name: "description",
@@ -45,7 +51,11 @@ useHead({
     },
     {
       property: "og:image",
-      content: `/images/big_${sign}.svg`,
+      content: `http://localhost:3000/images/bg_${sign}.png`,
+    },
+    {
+      property: "og:image:alt",
+      content: `Image of ${sign}`,
     },
     { property: "og:type", content: "website" },
   ],
@@ -55,17 +65,13 @@ useHead({
 <template>
   <main class="max-w-7xl">
     <div class="flex flex-col justify-between">
-      <div
-        class="grid grid-cols-1 md:grid-cols-2 p-8 lg:p-16 rounded-lg bg-stars"
-      >
+      <div class="grid grid-cols-1 md:grid-cols-2 p-8 lg:p-16 rounded-lg bg-stars">
         <div class="items-center justify-center hidden md:flex">
           <img :src="'images/big_' + sign + '.svg'" alt="" />
         </div>
         <div>
           <div class="mx-auto max-w-2xl">
-            <h1
-              class="text-xl font-bold tracking-tight text-white sm:text-4xl italic"
-            >
+            <h1 class="text-xl font-bold tracking-tight text-white sm:text-4xl italic">
               {{ data.sign.split(" ")[0] }}
             </h1>
           </div>
@@ -78,21 +84,12 @@ useHead({
         </div>
       </div>
       <!-- sign select -->
-      <div
-        class="flex flex-col lg:flex-row items-center justify-center gap-4 py-8"
-      >
+      <div class="flex flex-col lg:flex-row items-center justify-center gap-4 py-8">
         <span class="text-white text-lg font-bold">Change Sign:</span>
         <div class="flex gap-4 flex-wrap justify-evenly xs:justify-normal">
-          <NuxtLink
-            v-for="sign in signs"
-            :to="sign.sign"
-            class="flex flex-col gap-2 items-center"
-          >
-            <img
-              class="shadow-sm bg-purple-500 w-16 h-16 rounded-full sign"
-              :to="'/' + sign.sign"
-              :src="'images/' + sign.sign.toLowerCase() + '-icon.svg'"
-            />
+          <NuxtLink v-for="sign in signs" :to="sign.sign" class="flex flex-col gap-2 items-center">
+            <img class="shadow-sm bg-purple-500 w-16 h-16 rounded-full sign" :to="'/' + sign.sign"
+              :src="'images/' + sign.sign.toLowerCase() + '-icon.svg'" />
             <div class="text-white">{{ sign.sign }}</div>
           </NuxtLink>
         </div>
