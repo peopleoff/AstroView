@@ -51,7 +51,7 @@ useHead({
     },
     {
       property: "og:image",
-      content: `http://localhost:3000/images/bg_${sign}.png`,
+      content: `https://astroview.io/images/bg_${sign}.png`,
     },
     {
       property: "og:image:alt",
