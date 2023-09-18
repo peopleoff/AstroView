@@ -47,7 +47,7 @@ useHead({
     },
     {
       property: "og:title",
-      content: formattedSign.sign,
+      content: `${formattedSign.sign} Horoscope`,
     },
     {
       property: "og:image",
