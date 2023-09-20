@@ -18,21 +18,21 @@ export default defineEventHandler(async (event) => {
       },
       {
         role: "user",
-        content: "What are all the horoscopes for today?",
+        content: `What are all the horoscopes for today in JSON format with 3 keys, sign, horoscope, and created_at with this date ${createdAt}. Only provide the JSON output in a horoscopes array"`,
       },
     ],
   });
   const result = chatCompletion.data.choices[0].message?.content;
   if (!result) {
-    return "No result"
+    return "No result";
   }
+  const startIndex = result.indexOf("{"); // Find the first '{' character
+  const lastIndex = result.lastIndexOf("}"); // Find the last '}' character
+  const jsonString = result.slice(startIndex, lastIndex + 1); // Extract the JSON portion
+  const jsonResult = JSON.parse(jsonString);
   const client = await serverSupabaseClient(event);
 
-  const aiHoroscopes: Array<Horoscope> = result.split("\n\n").map((sign) => {
-    const [title, content] = sign.split(":\n");
-    return { sign: title, horoscope: content, created_at: createdAt };
-  });
-  const { data, error } = await client.from("Horoscopes").insert(aiHoroscopes);
+  const { data, error } = await client.from("Horoscopes").insert(jsonResult.horoscopes);
   if (error) {
     throw createError({
       statusCode: 500,
@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
     })
   }
   console.log(error);
-  return aiHoroscopes;
+  return jsonResult;
 });
 
 // import { serverSupabaseClient } from '#supabase/server'
