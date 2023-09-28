@@ -64,6 +64,7 @@ useHead({
 
 <template>
   <main class="max-w-7xl">
+    <div></div>
     <div class="flex flex-col justify-between">
       <div class="grid grid-cols-1 md:grid-cols-2 p-8 lg:p-16 rounded-lg bg-stars">
         <div class="items-center justify-center hidden md:flex">

@@ -6,12 +6,12 @@
     >
       <NuxtLink to="/" class="-m-1.5 p-1.5">
         <span class="sr-only">Your Company</span>
-        <!-- <img
-            class="h-8 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+        <img
+            class="h-12 w-auto"
+            src="/images/logo.png"
             alt=""
-          /> -->
-        <Logo class="h-12 w-auto" />
+          />
+        <!-- <Logo class="h-12 w-auto" /> -->
       </NuxtLink>
       <!-- <Moon /> -->
     </nav>
