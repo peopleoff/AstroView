@@ -25,10 +25,10 @@ defineProps({
         class="bg-slate-800 py-8 px-4 rounded-xl col-span-3 md:col-span-1"
       >
         <div class="text-left text-white">
-          <h4 class="text-xl font-bold">Today's Vibes</h4>
+          <h3 class="text-xl font-bold">Today's Vibes</h3>
         </div>
-        <div class="text-left text-white mt-4">
-          <h3 class="text-md font-bold">Matches</h3>
+        <div class="text-left text-white py-4">
+          <h4 class="text-md font-bold">Matches</h4>
         </div>
         <Stats />
       </div>
