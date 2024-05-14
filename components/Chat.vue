@@ -2,7 +2,7 @@
 import { PaperAirplaneIcon } from "@heroicons/vue/20/solid";
 import { QuestionMarkCircleIcon } from "@heroicons/vue/20/solid";
 import { vAutoAnimate } from "@formkit/auto-animate";
-import gptMessage from '@/types/gptMessage'
+import type { gptMessage } from "@/types/gptMessage";
 const route = useRoute();
 const props = defineProps({
   sign: {
@@ -36,34 +36,32 @@ async function askQuestion(question?: string) {
   //Clear the question
   userQuestion.value = "";
   awaitingResponse.value = true;
-  console.log({
-      sign: props.sign,
-      messages: messages.value,
-      date: date
-    })
-  const { data, error } = await useFetch("/api/askQuestion", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: {
-      sign: props.sign,
-      messages: messages.value,
-      date: date
-    },
-  });
-  if(error.value){
-    throw createError({
-      message: error.value.message,
-      statusCode: error.value.statusCode
-    })
+  try {
+    const data = await $fetch("/api/askQuestion", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: {
+        sign: props.sign,
+        messages: messages.value,
+        date: date,
+      },
+    });
+    const returnedMessages = data as gptMessage;
+    //Get new questions to ask
+    //Push the resposne from the AI into the stack of messages
+    messages.value.push(returnedMessages);
+    awaitingResponse.value = false;
+    chatbox.value.scrollTop = chatbox.value.scrollHeight;
+  } catch (error) {
+    console.error(error);
+    messages.value.push({
+      role: "assistant",
+      content: "I'm sorry, I'm having trouble understanding you.",
+    });
+    awaitingResponse.value = false;
   }
-  const returnedMessages = data.value as gptMessage;
-  //Get new questions to ask
-  //Push the resposne from the AI into the stack of messages
-  messages.value.push(returnedMessages);
-  awaitingResponse.value = false;
-  chatbox.value.scrollTop = chatbox.value.scrollHeight;
 }
 </script>
 
@@ -72,7 +70,7 @@ async function askQuestion(question?: string) {
     <div class="text-left text-white p-4 bg-slate-800 rounded-t-md">
       <div class="text-left text-white">
         <h4 class="text-xl font-bold">Ask me a Question</h4>
-        <p class="text-md" data-v-inspector="components/AstrosView.vue:36:11">
+        <p class="text-md">
           A list of questions for extra guideance
         </p>
       </div>

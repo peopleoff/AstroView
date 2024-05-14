@@ -1,12 +1,11 @@
-import { Configuration, OpenAIApi } from "openai";
-import Horoscope from "@/types/Horoscope";
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_APIKEY,
-});
-const openai = new OpenAIApi(configuration);
+import OpenAI from "openai";
+import type { Horoscope } from "@/types/Horoscope";
+const openai = new OpenAI();
 export default defineEventHandler(async (event) => {
   const { messages, sign, date } = await readBody(event);
-  const data: Horoscope = await event.$fetch(`/api/getHoroscopes?sign=${sign}&date=${date}`);
+  const data: Horoscope = await event.$fetch(
+    `/api/getHoroscopes?sign=${sign}&date=${date}`
+  );
 
   const prompt = [
     {
@@ -22,17 +21,16 @@ export default defineEventHandler(async (event) => {
   //Add the prompt to the beginning of the messages array
   messages.unshift(...prompt);
   try {
-    const chatCompletion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
+    const chatCompletion = await openai.chat.completions.create({
+      model: "gpt-4o",
       messages: messages,
     });
 
-    return chatCompletion.data.choices[0].message;
+    return chatCompletion.choices[0].message;
   } catch (error) {
     throw createError({
       statusCode: 500,
-      message: 'Something went wrong',
+      message: "Something went wrong",
     });
   }
-
 });

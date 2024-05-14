@@ -29,7 +29,7 @@ export default eventHandler(async (event) => {
         const result = await client.request(request)
         return result;
     } catch (error) {
-        console.log(error.response.body);
+        console.error(error.response.body);
         throw createError({
             statusCode: 500,
             message: 'Something went wrong',

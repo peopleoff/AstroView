@@ -1,15 +1,12 @@
-import { Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 import { serverSupabaseClient } from "#supabase/server";
 
 export default defineEventHandler(async (event) => {
   const { date } = getQuery(event);
   const createdAt = date || new Date().toLocaleDateString();
-  const configuration = new Configuration({
-    apiKey: process.env.OPENAI_APIKEY,
-  });
-  const openai = new OpenAIApi(configuration);
-  const chatCompletion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
+  const openai = new OpenAI();
+  const chatCompletion = await openai.chat.completions.create({
+    model: "gpt-4o",
     messages: [
       {
         role: "system",
@@ -22,7 +19,7 @@ export default defineEventHandler(async (event) => {
       },
     ],
   });
-  const result = chatCompletion.data.choices[0].message?.content;
+  const result = chatCompletion.choices[0].message?.content;
   if (!result) {
     return "No result";
   }
@@ -32,14 +29,16 @@ export default defineEventHandler(async (event) => {
   const jsonResult = JSON.parse(jsonString);
   const client = await serverSupabaseClient(event);
 
-  const { data, error } = await client.from("Horoscopes").insert(jsonResult.horoscopes);
+  const { data, error } = await client
+    .from("Horoscopes")
+    .insert(jsonResult.horoscopes);
   if (error) {
     throw createError({
       statusCode: 500,
       message: error.message,
-    })
+    });
   }
-  console.log(error);
+  console.error(error);
   return jsonResult;
 });
 

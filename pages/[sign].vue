@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Horoscope from "@/types/Horoscope";
+import type { Horoscope } from "@/types/Horoscope";
 const signs = useSign();
 const route = useRoute();
 const sign = route.params.sign;
@@ -28,9 +28,9 @@ useHead({
   title: formattedSign.sign,
   link: [
     {
-      rel: 'canonical',
+      rel: "canonical",
       href: `https://astroview.io/${sign}`,
-    }
+    },
   ],
   meta: [
     {
@@ -71,7 +71,9 @@ useHead({
           <img :src="'images/big_' + sign + '.svg'" alt="" />
         </div>
         <div class="mx-auto max-w-2xl">
-          <h1 class="text-xl font-bold tracking-tight text-white sm:text-4xl italic">
+          <h1
+            class="text-xl font-bold tracking-tight text-white sm:text-4xl italic"
+          >
             {{ data.sign.split(" ")[0] }}
           </h1>
           <h2 class="text-2xl text-white font-bold pb-4">Today's Horoscope</h2>
@@ -80,10 +82,19 @@ useHead({
           </p>
           <div class="py-4 flex flex-col gap-2">
             <span class="text-white text-lg font-bold">Change Sign:</span>
-            <div class="grid grid-cols-4 lg:grid-cols-6 gap-4 flex-wrap justify-evenly xs:justify-normal">
-              <NuxtLink v-for="sign in signs" :to="sign.sign" class="flex flex-col gap-2 items-center">
-                <img class="shadow-sm bg-purple-500 w-16 h-16 rounded-full sign h-full" :to="'/' + sign.sign"
-                  :src="'images/' + sign.sign.toLowerCase() + '-icon.svg'" />
+            <div
+              class="grid grid-cols-4 lg:grid-cols-6 gap-4 flex-wrap justify-evenly xs:justify-normal"
+            >
+              <NuxtLink
+                v-for="sign in signs"
+                :to="sign.sign"
+                class="flex flex-col gap-2 items-center"
+              >
+                <img
+                  class="shadow-sm bg-purple-500 w-16 h-16 rounded-full sign h-full"
+                  :to="'/' + sign.sign"
+                  :src="'images/' + sign.sign.toLowerCase() + '-icon.svg'"
+                />
                 <div class="text-white">{{ sign.sign }}</div>
               </NuxtLink>
             </div>
@@ -107,11 +118,10 @@ useHead({
   </main>
 </template>
 
-
 <style scoped>
 .full-bg {
   position: absolute;
-  background-image: url('/images/stars.svg');
+  background-image: url("/images/stars.svg");
   height: 100%;
   width: 100%;
   z-index: -1;
@@ -119,6 +129,12 @@ useHead({
   left: 0;
   background-size: cover;
   mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
-  -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 1)), to(rgba(0, 0, 0, 0)));
+  -webkit-mask-image: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(rgba(0, 0, 0, 1)),
+    to(rgba(0, 0, 0, 0))
+  );
 }
 </style>
