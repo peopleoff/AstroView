@@ -1,4 +1,4 @@
-import Sign from "@/types/Sign";
+import type { Sign } from "@/types/Sign";
 const signs: Array<Sign> = [
   {
     sign: "Aries",
